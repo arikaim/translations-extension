@@ -1,0 +1,17 @@
+{% set items = [ 
+    {   
+        title: labels.text,
+        component: 'translations::admin.translate.text',
+        icon: 'file alternate outline',
+        id: 'view_translate_text',
+        active: true 
+    }       
+] %}
+
+{{  component('components:tabs.vertical',{ 
+        items: items, 
+        menu: { id: 'translate_menu' }, 
+        item_class: 'translate-tab-item',
+        content: { id: 'translate_content', component: 'translations::admin.translate.text' } 
+    })
+}}

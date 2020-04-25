@@ -1,0 +1,18 @@
+{
+    "title": "Language Translations",
+    "name": "translations",
+    "package-type": "extension",
+    "type": "system",
+    "description": "Language Translations Api.",
+    "short-description": "Translations service.",
+    "version": "1.0.0",
+    "repository": "https://github.com/arikaim/translations-extension.git",
+    "position": "2",
+    "admin-menu": {        
+        "title": "Translations",
+        "icon": "language",
+        "page-title": "Language Translations",
+        "page-icon": "language",       
+        "component": "translations::admin"
+    }   
+}

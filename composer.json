@@ -1,0 +1,20 @@
+{
+    "name": "arikaim/translations-extension",
+    "description": "Arikaim CMS Translations Extension",
+    "keywords": ["Extension", "Arikaim CMS Translations extension","Translations","Arikaim","CMS"],
+    "type": "arikaim-extension",
+    "license": "GPL-3.0-or-later",
+    "authors": [{
+        "name": "Konstantin Atanasov",
+        "email": "info@arikaim.com",
+        "homepage": "http://arikaim.com"
+    }],
+    "require": {
+        "php": ">=7.1",
+        "arikaim/installer": "*",
+        "arikaim/translate-module": "^1.0.0"
+    },
+    "extra": {
+        "path": "translations"
+    }
+}
