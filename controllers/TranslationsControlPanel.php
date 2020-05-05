@@ -45,15 +45,8 @@ class TranslationsControlPanel extends ControlPanelApiController
         $this->onDataValid(function($data) {            
             $language = $data->get('target_language',$this->getPageLanguage($data));
             $text = $data->get('text','');         
-            $driverName = $this->get('options')->get('translations.service.driver');
-
-            $driver = $this->get('driver')->create($driverName);
-            if (is_object($driver) == false) {
-                $this->error('Not valid translation api driver');
-                return;
-            }
-            
-            $translatedText = $driver->getInstance()->translate($text,$language);
+     
+            $translatedText = $this->translateText($text,$language);
            
             $this->setResponse($translatedText,function() use($language,$translatedText) {                                
                 $this
@@ -81,28 +74,9 @@ class TranslationsControlPanel extends ControlPanelApiController
             $extension = $data->get('extension',null);  
             $language = $data->get('language',$this->getPageLanguage($data));
             $uuid = $data->get('uuid',null);  
-            $fields = Arrays::toArray($data->get('fields',''),',');  
-            $translatedFields = [];          
+            $fields = $data->get('fields','');
 
-            $model = Model::create($data['model'],$extension)->findById($uuid);
-            if (is_object($model) == false) {
-                $this->error('Not valid translation uuid.');
-                return;
-            }
-            
-            $driverName = $this->get('options')->get('translations.service.driver');
-            $driver = $this->get('driver')->create($driverName);
-            if (is_object($driver) == false) {
-                $this->error('Not valid translation api driver');
-                return;
-            }
-
-            // do translations
-            $modelFields = $model->toArray();
-            foreach ($fields as $index => $key) {
-                $text = (isset($modelFields[$key]) == true) ? $modelFields[$key] : false;
-                $translatedFields[$key] = ($text != false) ? $driver->getInstance()->translate($text,$language) : '';                        
-            }
+            $translatedFields = $this->translateDbModel($data['model'],$extension,$uuid,$fields,$language);
 
             $this->setResponse(true,function() use($language,$uuid,$translatedFields) {                                
                 $this
@@ -116,4 +90,81 @@ class TranslationsControlPanel extends ControlPanelApiController
             ->addRule('text:required','fields')         
             ->validate();       
     }
+
+    /**
+     * Translate text
+     *
+     * @param string $text
+     * @param string $language
+     * @return string|false
+     */
+    public function translateText($text, $language)
+    {
+        $driver = $this->createTranslationDriver();
+        
+        return (is_object($driver) == true) ? $driver->getInstance()->translate($text,$language) : false;
+    } 
+
+    /**
+     * Translate db model
+     *
+     * @param string $modelName
+     * @param string $extension
+     * @param string $uuid
+     * @param string $fields
+     * @param string $language
+     * @return array|false
+     */
+    public function translateDbModel($modelName, $extension, $uuid, $fields, $language)
+    {
+        $fields = Arrays::toArray($fields,',');  
+        $model = Model::create($modelName,$extension)->findById($uuid);
+        if (is_object($model) == false) {
+            $this->error('Not valid translation uuid.');
+            return false;
+        }
+       
+        return $this->translateFields($fields,$model->toArray(),$language);      
+    }
+
+    /**
+     * Translate fields
+     *
+     * @param string|array $fields
+     * @param array $values
+     * @param string $language
+     * @return array|false
+     */
+    public function translateFields($fields, array $values, $language)
+    {
+        $driver = $this->createTranslationDriver();
+        if (is_object($driver) == false) {
+            return false;
+        }
+
+        $fields = (is_string($fields) == true) ? Arrays::toArray($fields,',') : $fields;  
+        foreach ($fields as $index => $key) {
+            $text = (isset($values[$key]) == true) ? $values[$key] : false;
+            $translatedFields[$key] = ($text != false) ? $driver->getInstance()->translate($text,$language) : '';                        
+        }
+
+        return $translatedFields;
+    } 
+
+    /**
+     * Create translation driver
+     *
+     * @return Driver|false
+     */
+    protected function createTranslationDriver()
+    {
+        $driverName = $this->get('options')->get('translations.service.driver');
+        $driver = $this->get('driver')->create($driverName);
+        if (is_object($driver) == false) {
+            $this->error('Not valid translation api driver');
+            return false;
+        }
+
+        return $driver;
+    } 
 }
