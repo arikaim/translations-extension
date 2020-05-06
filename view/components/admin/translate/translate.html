@@ -5,7 +5,13 @@
         icon: 'file alternate outline',
         id: 'view_translate_text',
         active: true 
-    }       
+    },
+    {   
+        title: labels.languages,
+        component: 'translations::admin.translate.languages',
+        icon: 'globe',
+        id: 'view_translate_language',      
+    }     
 ] %}
 
 {{  component('components:tabs.vertical',{ 

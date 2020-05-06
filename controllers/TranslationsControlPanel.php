@@ -143,9 +143,11 @@ class TranslationsControlPanel extends ControlPanelApiController
         }
 
         $fields = (is_string($fields) == true) ? Arrays::toArray($fields,',') : $fields;  
-        foreach ($fields as $index => $key) {
-            $text = (isset($values[$key]) == true) ? $values[$key] : false;
-            $translatedFields[$key] = ($text != false) ? $driver->getInstance()->translate($text,$language) : '';                        
+      
+        foreach ($fields as $index => $key) {           
+            $text = (isset($values[$key]) == true) ? $values[$key] : null;   
+            $text = (is_array($text) == true) ? null : trim($text);             
+            $translatedFields[$key] = (empty($text) == false) ? $driver->getInstance()->translate($text,$language) : '';                        
         }
 
         return $translatedFields;
