@@ -7,7 +7,21 @@
 'use strict';
 
 function TranslationsControlPanel() {
-    var self = this;
+  
+    this.translateComponent = function(theme, componentName, language, type, onSuccess, onError) {
+        var data = {
+            theme: theme,
+            component_name: componentName,
+            language: language,
+            type: type
+        };
+
+        return arikaim.post('/api/translations/admin/translate/component',data,onSuccess,onError);
+    };
+
+    this.saveComponentProperty = function(formId, onSuccess, onError) {
+        return arikaim.post('/api/translations/admin/translate/save/property',formId,onSuccess,onError); 
+    };
 
     this.translate = function(text, targetLanguage, sourceLanguage, onSuccess, onError) {
         sourceLanguage = getDefaultValue(sourceLanguage,'auto');

@@ -3,6 +3,11 @@
 {% set driver = service('driver').create(driver_name) %}
 {% set items = driver.getLanguages() %}
 <div class="mt-4">
+{% if items|length == 0 %}
+    <div class="ui error message">
+        {{ messages.error }}
+    </div>
+{% else %}    
     <table class="ui very basic table">
         <tbody>
         {% set index = 0 %}
@@ -19,5 +24,6 @@
         {% endfor %}
         </tbody>
     </table>
+{% endif %}
 </div>
 {% endcomponent %}

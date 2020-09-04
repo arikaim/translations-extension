@@ -9,6 +9,12 @@ Translations extension for Arikaim CMS
   * [Translation Module](https://github.com/arikaim/translate-module.git)
   
 
+#### Features
+  * Translate theme.
+  * Translate database model.
+  * Translate text.
+  * Console commands for theme, component and page translation.
+
 #### Installation
 
 ```sh
