@@ -10,8 +10,10 @@
             "writable": "Translation file is not writtable."
         },
         "translation": {
-            "writable": "path not writable, can't write translation file",
-            "api": "Translation api error"
+            "writable": "Path not writable, can't write translation file",
+            "api": "Translation api error",
+            "exists": "Translation exist error.",
+            "file": "Translation file not found error."
         },
         "translate": "Translation error."
     }

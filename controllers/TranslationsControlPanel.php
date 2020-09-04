@@ -81,7 +81,7 @@ class TranslationsControlPanel extends ControlPanelApiController
 
             $translationFileName = $template->getTranslationFileName($component,$language,$type);
             if (File::exists($translationFileName) == true) {
-                $this->error('errors.exists');
+                $this->error('errors.translation.exists');
                 return false;
             }
             // Read english translation file
