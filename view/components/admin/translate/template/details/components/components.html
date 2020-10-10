@@ -19,34 +19,50 @@
     <div class="item">
         <div class="left floated content">            
             {% if template.hasLanguage(translations,language) == true %}              
-                {% set hide_create = 'invisible' %}
-                {% set hide_edit = '' %}              
+                {% set disable_create = 'disabled' %}
+                {% set disable_edit = '' %}      
+                {% set delete_disabled = '' %}        
             {% else %}
-                {% set hide_create = '' %}
-                {% set hide_edit = 'invisible' %}
+                {% set disable_create = '' %}
+                {% set disable_edit = 'disabled' %}
+                {% set delete_disabled = 'disabled' %}   
             {% endif %}          
             {% set disabled = (translations.languages|length == 0) ? 'disabled' : '' %}
-            <button class="ui mini green button icon create-translation {{ disabled }} {{ hide_create }}" 
+            {% set delete_disabled = (language == 'en') ? 'disabled' : delete_disabled %}
+            {% if demo_mode != true %}
+                <button class="ui mini basic compact button icon delete-translation {{ delete_disabled }}" 
+                    theme="{{ theme_name }}"
+                    type="components"
+                    component-name="{{ file.full_name }}"                
+                    language="{{ language }}"
+                    title="{{ labels.delete }}">
+                    <i class="icon trash orange"></i>
+                </button>   
+            {% endif %}
+            <button class="ui mini basic compact button icon create-translation {{ disabled }} {{ disable_create }}" 
                 theme="{{ theme_name }}"
+                type="components"
                 component-name="{{ file.full_name }}"                
                 language="{{ language }}"
                 title="{{ labels.translate }}">
-                <i class="icon plus"></i>
+                <i class="icon green plus"></i>
             </button>                       
-            <button id="edit_translaton_{{ file.name }}" class="ui mini basic button icon edit-translation {{ hide_edit }}" 
+            <button id="edit_translaton_{{ file.name }}" class="ui mini basic compact button icon edit-translation {{ disable_edit }}" 
                 theme="{{ theme_name }}"
+                type="components"
                 component-name="{{ file.full_name }}"
                 title="{{ labels.edit }}" 
                 language="{{ language }}">
                 <i class="icon edit blue"></i>                    
             </button>           
         </div>
-        <i class="file code outline icon"></i>       
-        <div class="content" >
+        <i class="file code outline blue icon"></i>       
+        <div class="content">
             <div class="header">
-                {% if child_components|length > 0 %}
+                {% if child_components|length > 0 %}              
                     <a class="load-child-components" 
                         component-id="{{ file.id }}" 
+                        type="components"
                         parent="{{ file.full_name }}" 
                         theme="{{ theme_name }}" 
                         language="{{ language }}" >
@@ -56,19 +72,10 @@
                     {{ file.name }}   
                 {% endif %} 
             </div>
-            <div class="description">      
-                {% if child_components|length > 0 %}
-                    <button class="ui tertiary mini button icon load-child-components"
-                        title="{{ labels.child }}"
-                        component-id="{{ file.id }}" 
-                        parent="{{ file.full_name }}" 
-                        theme="{{ theme_name }}" 
-                        language="{{ language }}" >
-                        {{ child_components|length }}
-                        <i class="icon angle right"></i>
-                    </button>                
-                {% endif %} 
-                <i class="globe icon small blue" title="{{ labels.translations }}"></i>  
+            <div class="description">    
+                {% if translations.languages|length > 0 %}                 
+                    <i class="globe icon small blue" title="{{ labels.translations }}"></i>  
+                {% endif %}
                 {% for item in translations.languages %}
                 <i class="pl-1 flag {{ (item == 'en') ? 'us' : item }}"></i>
                 <span class="underline">
@@ -76,7 +83,7 @@
                 </span>
                 {% endfor %}
             </div>
-            <div id="components_content_{{ file.id }}" class="mt-1 mb-1 hidden p-1">
+            <div id="components_content_{{ file.id }}" class="mt-1 mb-1 hidden">
             </div>
         </div>      
     </div>

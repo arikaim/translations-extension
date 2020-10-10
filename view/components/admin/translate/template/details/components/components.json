@@ -4,6 +4,7 @@
         "translate": "Create language translation",
         "new": "New",
         "edit": "Edit",
+        "delete": "Delete translation",
         "child": "Open child components",
         "translations": "Language translations"
     }

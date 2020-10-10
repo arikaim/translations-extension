@@ -76,7 +76,22 @@ class TranslateConsole
     }
 
     /**
-     * Trranslate component and all child components
+     * Translate email
+     *
+     * @param object $package
+     * @param object $driver
+     * @param string $language
+     * @param string $pageName    
+     * @param integer $indent
+     * @return boolean
+    */
+    public function translateEmail($package, $driver, $language, $pageName, $indent = 2)
+    {
+        return $this->translateComponent($package,$driver,$language,$pageName,'emails',$indent);
+    }
+   
+    /**
+     * Translate component and all child components
      *
      * @param object $package
      * @param object $driver
@@ -92,8 +107,7 @@ class TranslateConsole
             ($this->onBeforeTranslate)($componentName,$indent);
         }
        
-        // translate child
-        $childComponents = ($type == 'pages') ? $package->getPages($componentName) : $package->getComponents($componentName);
+        $childComponents = $this->getPackageComponents($package,$componentName,$type);
         if (\count($childComponents) > 0) {   
             if (\is_callable($this->onHasChild) == true) {
                 ($this->onHasChild)($componentName);
@@ -108,7 +122,7 @@ class TranslateConsole
             return false;
         }
 
-        $path = ($type == 'components') ? $package->getComponentPath($componentName) : $package->getPagePath($componentName);
+        $path = $package->getComponentPath($componentName,$type);
         $newFile = $package->resolveTranslationFileName($path,$language);      
 
         if (File::setWritable($path) == false) {
@@ -150,8 +164,8 @@ class TranslateConsole
      */
     public function translateComponents($package, $driver, $language, $type = 'components', $parent = '', $indent = 2)
     {
-        $components = ($type == 'pages') ? $package->getPages($parent) : $package->getComponents($parent);
-
+        $components = $this->getPackageComponents($package,$parent,$type);
+      
         foreach($components as $item) {
             $componentName = $item['full_name'];               
             $this->translateComponent($package,$driver,$language,$componentName,$type,$indent);               
@@ -195,5 +209,33 @@ class TranslateConsole
         if (\is_callable($this->onError) == true) {
             ($this->onError)($componentName,$message);
         }           
+    }
+
+    /**
+     * Get package components
+     *
+     * @param object $package
+     * @param string $componentName
+     * @param string $type
+     * @return array
+     */
+    protected function getPackageComponents($package, $componentName, $type)
+    {
+        switch($type) {
+            case 'pages': 
+                $components = $package->getPages($componentName);
+                break;
+            case 'components': 
+                $components = $package->getComponents($componentName);
+                break;
+            case 'emails': 
+                $components = $package->getEmails($componentName);
+                break;
+            default:
+                $components = $package->getComponents($componentName);
+                break;
+        }
+
+        return $components;
     }
 }

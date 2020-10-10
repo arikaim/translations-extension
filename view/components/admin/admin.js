@@ -23,6 +23,17 @@ function TranslationsControlPanel() {
         return arikaim.post('/api/translations/admin/translate/save/property',formId,onSuccess,onError); 
     };
 
+    this.deleteTranslation = function(theme, componentName, language, type, onSuccess, onError) {
+        var data = {
+            theme: theme,
+            component_name: componentName,
+            language: language,
+            type: type
+        };
+        
+        return arikaim.put('/api/translations/admin/delete/translation',data,onSuccess,onError);
+    }
+
     this.translate = function(text, targetLanguage, sourceLanguage, onSuccess, onError) {
         sourceLanguage = getDefaultValue(sourceLanguage,'auto');
         var data = {

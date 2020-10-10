@@ -60,13 +60,12 @@ function TemplateTranslations() {
         });
     };
 
-    this.loadChildComponents = function(theme, language, parent, id, type) {  
-        
-        var componentName = (type == 'pages') ? 'pages' : 'components';
+    this.loadChildComponents = function(theme, language, parent, id, type) {          
+        type = getDefaultValue(type,'components');
 
         arikaim.page.loadContent({
             id: 'components_content_' + id,
-            component: 'translations::admin.translate.template.details.' + componentName,
+            component: 'translations::admin.translate.template.details.' + type,
             params: { 
                 theme_name: theme,
                 language: language,
@@ -80,18 +79,23 @@ function TemplateTranslations() {
 
     this.loadThemeComponents = function(theme, language, type) {
 
-        if (type == 'pages') {
-            var componentName = 'pages';
-            var id = "theme_pages";
-        } else {
-            var componentName = 'components';
-            var id = "theme_components";
+        switch (type) {
+            case 'pages':              
+                var id = "theme_pages";
+                break;
+            case 'components':                 
+                var id = "theme_components";
+                break;
+            case 'emails':                 
+                var id = "theme_emails";
+                break;           
         }
-        $('.theme-components').html("");
+       
+        $('.theme-components').html('');
 
         arikaim.page.loadContent({
             id: id,
-            component: 'translations::admin.translate.template.details.' + componentName,
+            component: 'translations::admin.translate.template.details.' + type,
             params: { 
                 theme_name: theme,
                 language: language
@@ -112,6 +116,25 @@ function TemplateTranslations() {
             $('#components_content_' + id).show();
             
             return self.loadChildComponents(theme,language,parent,id,type);
+        });
+
+        arikaim.ui.button('.delete-translation',function(element) {
+            var theme = $(element).attr('theme');
+            var type = $(element).attr('type');
+            var language = $(element).attr('language');
+            var componentName = $(element).attr('component-name');    
+            $('#translation_content').html('');
+
+            return translations.deleteTranslation(theme,componentName,language,type,function(result) {
+                $(element).addClass('disabled');
+                arikaim.page.toastMessage(result.message);             
+                self.loadThemeComponents(theme,language,type);
+            },function(error) {               
+                arikaim.page.toastMessage({
+                    message: error[0],
+                    class: 'error'
+                });
+            });
         });
 
         arikaim.ui.button('.create-translation',function(element) {

@@ -1,5 +1,6 @@
 {
     "translate": "Translation successfully.",
+    "delete": "Translation deleted successfully.",
     "property": {
         "save": "Translation property saved successfully."
     },
@@ -13,6 +14,7 @@
             "writable": "Path not writable, can't write translation file",
             "api": "Translation api error",
             "exists": "Translation exist error.",
+            "delete": "Translation delete file error.",
             "file": "Translation file not found error."
         },
         "translate": "Translation error."

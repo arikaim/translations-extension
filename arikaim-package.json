@@ -5,7 +5,7 @@
     "type": "system",
     "description": "Language Translations Api.",
     "short-description": "Translations service.",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "repository": "https://github.com/arikaim/translations-extension.git",
     "position": "2",
     "admin-menu": {        

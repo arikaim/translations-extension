@@ -29,7 +29,8 @@ class Translations extends Extension
         $this->addApiRoute('POST','/api/translations/admin/translate/save/property','TranslationsControlPanel','saveTranslationProperty','session');   
         // Theme component translations
         $this->addApiRoute('POST','/api/translations/admin/translate/component','TranslationsControlPanel','createComponentTranslation','session'); 
-
+        $this->addApiRoute('PUT','/api/translations/admin/delete/translation','TranslationsControlPanel','deleteComponentTranslation','session');
+        
         // Options
         $this->createOption('translations.service.driver','google-simple');  
         $this->createOption('translations.service.disable',false);     
@@ -38,6 +39,7 @@ class Translations extends Extension
         $this->registerConsoleCommand('TranslateTheme');    
         $this->registerConsoleCommand('TranslateComponent');    
         $this->registerConsoleCommand('TranslatePage');    
+        $this->registerConsoleCommand('TranslateEmail');    
     }
     
     /**

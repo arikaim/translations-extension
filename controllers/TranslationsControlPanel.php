@@ -31,6 +31,56 @@ class TranslationsControlPanel extends ControlPanelApiController
     }
 
     /**
+     *  Delete component translation
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param Validator $data
+     * @return Psr\Http\Message\ResponseInterface
+    */
+    public function deleteComponentTranslationController($request, $response, $data)
+    {
+        $this->onDataValid(function($data) {      
+            $type = $data->get('type','components'); 
+            $theme = $data->get('theme');
+            $language = $data->get('language');          
+            $componentName = $data->get('component_name');
+            $component = \str_replace('_','.',$componentName);
+
+            if (empty($language) || $language == 'en') {
+                $this->error('errors.translation.language');
+                return false;
+            }
+
+            $packageManager = $this->get('packages')->create('template');
+            $template = $packageManager->createPackage($theme);
+            if (\is_object($template) == false) {
+                $this->error('errors.theme_name');
+                return false;
+            }
+
+            $translationFileName = $template->getTranslationFileName($component,$language,$type);
+            if (File::exists($translationFileName) == false) {
+                $this->error('errors.translation.delete');
+                return false;
+            }
+           
+            File::delete($translationFileName);
+           
+            $this->setResponse(!File::exists($translationFileName),function() use($language,$theme,$componentName,$type) {                                
+                $this
+                    ->message('delete')
+                    ->field('theme',$theme)      
+                    ->field('type',$type)             
+                    ->field('component',$componentName)
+                    ->field('language',$language);                         
+            },'errors.translation.delete');
+           
+        });
+        $data->validate();   
+    }
+
+    /**
      * Translate component
      *
      * @param array $translation
@@ -90,7 +140,7 @@ class TranslationsControlPanel extends ControlPanelApiController
                 $this->error('errors.translation.file');
                 return false;
             }
-            $path = ($type == 'components') ? $template->getComponentPath($componentName) : $template->getPagePath($componentName);
+            $path = $template->getComponentPath($componentName,$type);
             $newFile = $template->resolveTranslationFileName($path,$language);      
 
             if (File::setWritable($path) == false) {

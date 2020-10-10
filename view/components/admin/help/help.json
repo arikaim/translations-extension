@@ -4,10 +4,20 @@
         "folder": "project folder",
         "theme": "Translate theme",
         "page": "Translate theme page",
+        "email": "Translate email",
         "component": "Translate theme component"
     },
     "descriptions": {
-        "theme": "Translate all theme components and pages. ",
-        "page": "Translate theme page"
+      
+        "name": "Theme name",
+        "page": "Theme page name",
+        "language": "Language code",
+        "email": "Email component name"
+    },
+    "commands": {
+        "theme": "Translate all theme components and pages.", 
+        "page": "Translate theme page",
+        "email": "Translate email component",
+        "component": "Translate html component."
     }
 }

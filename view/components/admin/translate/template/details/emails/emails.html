@@ -1,7 +1,7 @@
 {% set template = package('template').createPackage(theme_name) %}
 {% set parent_component = parent_component|default('') %}
 {% set hide_title = hide_title|default(true) %}
-{% set pages = template.getPages(parent_component) %}
+{% set emails = template.getEmails(parent_component) %}
 
 {% if hide_title != true %}
 <div class="ui header">
@@ -13,34 +13,34 @@
 <div class="ui divider"></div>
 {% endif %}
 <div class="ui list">
-    {% for file in pages %}     
-        {% set translations = template.getComponentTranslations(file.full_name,'pages') %}  
-        {% set child_pages = template.getPages(file.full_name) %}  
+    {% for file in emails %}     
+        {% set translations = template.getComponentTranslations(file.full_name,'emails') %}  
+        {% set child_emails = template.getEmails(file.full_name) %}  
         <div class="item">
             <div class="left floated content">            
                 {% if template.hasLanguage(translations,language) == true %}              
-                    {% set hide_create = 'disabled' %}
-                    {% set hide_edit = '' %}     
-                    {% set delete_disabled = '' %}           
+                    {% set hide_create = 'invisible' %}
+                    {% set hide_edit = '' %}       
+                    {% set delete_disabled = '' %}         
                 {% else %}
                     {% set hide_create = '' %}
-                    {% set hide_edit = 'disabled' %}
-                    {% set delete_disabled = 'disabled' %}  
+                    {% set hide_edit = 'invisible' %}
+                    {% set delete_disabled = 'disabled' %}   
                 {% endif %}          
                 {% set disabled = (translations.languages|length == 0) ? 'disabled' : '' %}
                 {% set delete_disabled = (language == 'en') ? 'disabled' : delete_disabled %}
                 {% if demo_mode != true %}
                     <button class="ui mini basic compact button icon delete-translation {{ delete_disabled }}" 
                         theme="{{ theme_name }}"
-                        type="pages"
+                        type="emails"
                         component-name="{{ file.full_name }}"                
                         language="{{ language }}"
                         title="{{ labels.delete }}">
                         <i class="icon trash orange"></i>
-                    </button>  
-                {% endif %} 
+                    </button>   
+                {% endif %}
                 <button class="ui mini basic compact button icon create-translation {{ disabled }} {{ hide_create }}" 
-                    type="pages"
+                    type="emails"
                     theme="{{ theme_name }}"
                     component-name="{{ file.full_name }}"                
                     language="{{ language }}"
@@ -48,7 +48,7 @@
                     <i class="icon green plus"></i>
                 </button>                       
                 <button id="edit_translaton_{{ file.name }}" class="ui mini basic compact button icon edit-translation {{ hide_edit }}" 
-                    type="pages"
+                    type="emails"
                     theme="{{ theme_name }}"
                     component-name="{{ file.full_name }}"
                     title="{{ labels.edit }}" 
@@ -56,12 +56,12 @@
                     <i class="icon edit blue"></i>                    
                 </button>           
             </div>
-            <i class="file code outline blue icon"></i>       
-            <div class="content" >
+            <i class="envelope open outline blue icon"></i>       
+            <div class="content">
                 <div class="header">
-                    {% if child_pages|length > 0 %}
+                    {% if child_emails|length > 0 %}
                         <a class="load-child-components" 
-                            type="pages"
+                            type="emails"
                             component-id="{{ file.id }}" 
                             parent="{{ file.full_name }}" 
                             theme="{{ theme_name }}" 
@@ -72,8 +72,8 @@
                         {{ file.name }}   
                     {% endif %} 
                 </div>
-                <div class="description">      
-                    {% if translations.languages|length > 0 %}                                
+                <div class="description">            
+                    {% if translations.languages|length > 0 %}                  
                         <i class="globe icon small blue" title="{{ labels.translations }}"></i>  
                     {% endif %}
                     {% for item in translations.languages %}
