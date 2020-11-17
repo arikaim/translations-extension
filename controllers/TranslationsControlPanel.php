@@ -322,9 +322,10 @@ class TranslationsControlPanel extends ControlPanelApiController
      * @param string|array $fields
      * @param array $values
      * @param string $language
+     * @param bool $exitOnError
      * @return array|false
      */
-    public function translateFields($fields, array $values, $language)
+    public function translateFields($fields, array $values, $language, $exitOnError = false)
     {
         $driver = $this->createTranslationDriver();
         if (\is_object($driver) == false) {
@@ -338,6 +339,10 @@ class TranslationsControlPanel extends ControlPanelApiController
             $text = (\is_array($text) == true) ? null : \trim($text);   
             if (empty($text) == false) {
                 $translatedText = $driver->getInstance()->translate($text,$language);
+                
+                if ($exitOnError == true && ($translatedText === false)) {
+                    return false;
+                }
                 $translatedFields[$key] = ($translatedText === false) ? $text : $translatedText;   
             } 
                                 
