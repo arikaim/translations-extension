@@ -94,7 +94,7 @@ class TranslationsControlPanel extends ControlPanelApiController
             if (\is_array($value) == true) {
                 $translation[$key] = $this->translateComponent($value,$language,$driver);
             } else {
-                $translatedText = $driver->getInstance()->translate($value,$language);
+                $translatedText = $driver->translate($value,$language);
                 if ($translatedText === false) {
                     return false;
                 }
@@ -245,7 +245,7 @@ class TranslationsControlPanel extends ControlPanelApiController
             $text = $data->get('text','');         
             
             $driver = $this->createTranslationDriver();
-            $translatedText = (\is_object($driver) == true) ? $driver->getInstance()->translate($text,$language) : false;
+            $translatedText = (\is_object($driver) == true) ? $driver->translate($text,$language) : false;
            
             if ($translatedText === false) {
                 $this->error($driver->getErrorMessage());
@@ -338,7 +338,7 @@ class TranslationsControlPanel extends ControlPanelApiController
             $text = (isset($values[$key]) == true) ? $values[$key] : null;   
             $text = (\is_array($text) == true) ? null : \trim($text);   
             if (empty($text) == false) {
-                $translatedText = $driver->getInstance()->translate($text,$language);
+                $translatedText = $driver->translate($text,$language);
                 
                 if ($exitOnError == true && ($translatedText === false)) {
                     return false;

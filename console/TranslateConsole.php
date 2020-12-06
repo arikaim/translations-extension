@@ -186,7 +186,7 @@ class TranslateConsole
             if (\is_array($value) == true) {
                 $translation[$key] = $this->translate($value,$language,$driver);
             } else {       
-                $translatedText = $driver->getInstance()->translate($value,$language); 
+                $translatedText = $driver->translate($value,$language); 
                 if ($translatedText === false) {
                     return false;
                 }
