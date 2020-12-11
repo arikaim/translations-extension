@@ -163,8 +163,7 @@ class TranslationsControlPanel extends ControlPanelApiController
                     ->field('type',$type)             
                     ->field('component',$componentName)
                     ->field('language',$language);                         
-            },'errors.translation.create');
-           
+            },'errors.translation.create');           
         });
         $data
             ->addRule('text:min=2','theme')  
