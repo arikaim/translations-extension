@@ -12,7 +12,7 @@ namespace Arikaim\Extensions\Translations\Console;
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\Arikaim;
-use Arikaim\Extensions\Translations\Console\TranslateConsole;
+use Arikaim\Extensions\Translations\Classes\Translations;
 
 /**
  * Translate theme component command
@@ -24,7 +24,7 @@ class TranslateComponent extends ConsoleCommand
      *
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('translate:component')->setDescription('Translate component.');
         $this->addOptionalArgument('theme','Theme Name'); 
@@ -41,39 +41,29 @@ class TranslateComponent extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        $translate = new TranslateConsole(function($componentName,$indent) {
-            $this->style->write(\str_pad("- ",$indent," ",STR_PAD_LEFT) . ConsoleHelper::getLabelText($componentName,'yellow'));
-        },function($componentName) {
-            $this->style->writeLn(ConsoleHelper::getLabelText(' done'));
-        },function($componentName,$message) {
-            $this->style->writeLn(ConsoleHelper::getLabelText($message,'red'));
-        },function($componentName) {
-            $this->style->writeLn('');
-        });
+        $this->showTitle();
 
         $theme = $input->getArgument('theme');       
         if (empty($theme) == true) {
             $this->showError("Missing theme name option!");
             return;
         }
-        
         $componentName = $input->getArgument('component');
         if (empty($componentName) == true) {
             $this->showError("Missing component name option!");
             return;
         }
-
         $language = $input->getArgument('language');
         if (empty($language) == true) {
             $this->showError("Missing language code option!");
             return;
         }
-
         $manager = Arikaim::packages()->create('template');
         if ($manager->hasPackage($theme) == false) {
             $this->showError("Theme name $theme not valid!");
             return;
         }
+        $package = $manager->createPackage($theme);
 
         $driverName = Arikaim::options()->get('translations.service.driver');
         $driver = Arikaim::driver()->create($driverName);
@@ -82,22 +72,25 @@ class TranslateComponent extends ConsoleCommand
             return;
         }
 
-        $package = $manager->createPackage($theme);
-    
-        $this->style->writeLn('');
-        $this->showTitle('Translate component ');
+        $translations = new Translations();
+        $translations->onJobProgress(function($name) {
+            $this->writeLn('  ' . ConsoleHelper::checkMark() . ' ' . $name);
+        });
+      
+        $this->writeFieldLn('Theme',$theme);
+        $this->writeFieldLn('Component',$componentName);
+        $this->writeFieldLn('From language','en');
+        $this->writeFieldLn('To language',$language);
+        $this->writeFieldLn('Driver',$driverName);
+        $this->writeLn('');
 
-        $this->style->writeLn('Theme: ' . ConsoleHelper::getLabelText($theme,'green'));
-        $this->style->writeLn('Component: ' . ConsoleHelper::getLabelText($componentName,'green'));
-        $this->style->write('From ' . ConsoleHelper::getLabelText('en','green'));
-        $this->style->writeLn(' to ' . ConsoleHelper::getLabelText($language,'green') . ' language.');
-        $this->style->writeLn('Translation Driver: ' . ConsoleHelper::getLabelText($driverName,'green'));
+        $translations->translateComponent($package,$driver,$language,$componentName);
 
-        $this->style->writeLn('');
-       
-        $translate->translateComponent($package,$driver,$language,$componentName);
+        if ($translations->hasError() == true) {
+            $this->showErrors($translations->getErrors());
+            return;
+        } 
 
-        $this->style->writeLn('');
         $this->showCompleted();
     }    
 }

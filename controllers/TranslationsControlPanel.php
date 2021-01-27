@@ -10,10 +10,9 @@
 namespace Arikaim\Extensions\Translations\Controllers;
 
 use Arikaim\Core\Controllers\ControlPanelApiController;
-use Arikaim\Core\Db\Model;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Utils;
-use Arikaim\Core\Collection\Arrays;
+use Arikaim\Extensions\Translations\Classes\Translations;
 
 /**
  * Translations control panel controller
@@ -64,7 +63,8 @@ class TranslationsControlPanel extends ControlPanelApiController
                 $this->error('errors.translation.delete');
                 return false;
             }
-           
+            
+            // delete file translation
             File::delete($translationFileName);
            
             $this->setResponse(!File::exists($translationFileName),function() use($language,$theme,$componentName,$type) {                                
@@ -78,31 +78,6 @@ class TranslationsControlPanel extends ControlPanelApiController
            
         });
         $data->validate();   
-    }
-
-    /**
-     * Translate component
-     *
-     * @param array $translation
-     * @param string $language
-     * @param object $driver
-     * @return array|false
-     */
-    public function translateComponent(array $translation, $language, $driver)
-    {
-        foreach ($translation as $key => $value) {
-            if (\is_array($value) == true) {
-                $translation[$key] = $this->translateComponent($value,$language,$driver);
-            } else {
-                $translatedText = $driver->translate($value,$language);
-                if ($translatedText === false) {
-                    return false;
-                }
-                $translation[$key] = $translatedText;
-            }           
-        }
-
-        return $translation;
     }
 
     /**
@@ -148,12 +123,12 @@ class TranslationsControlPanel extends ControlPanelApiController
                 return false;
             }            
             $driver = $this->createTranslationDriver();
-            $translation = $this->translateComponent($translation,$language,$driver);
+            $translation = Translations::translate($translation,$language,$driver);
             if ($translation === false) {
                 $this->error('errors.translation.api');
                 return false;
             }
-
+            // write translation file
             $result = File::write($newFile,Utils::jsonEncode($translation));
 
             $this->setResponse($result,function() use($language,$theme,$componentName,$type) {                                
@@ -211,7 +186,7 @@ class TranslationsControlPanel extends ControlPanelApiController
                 }
             }
         
-            $this->setResponse($result,function() use($language,$theme,$propertyKey,$componentName,$type) {                                
+            $this->setResponse((bool)$result,function() use($language,$theme,$propertyKey,$componentName,$type) {                                
                 $this
                     ->message('property.save')
                     ->field('theme',$theme)
@@ -278,8 +253,11 @@ class TranslationsControlPanel extends ControlPanelApiController
             $uuid = $data->get('uuid',null);  
             $fields = $data->get('fields','');
 
-            $translatedFields = $this->translateDbModel($data['model'],$extension,$uuid,$fields,$language);
-
+            $translatedFields = Translations::translateDbModel($data['model'],$extension,$uuid,$fields,$language);
+            if ($translatedFields === false) {
+                $this->error('Error translating db model.');
+                return false;
+            }
             $this->setResponse(true,function() use($language,$uuid,$translatedFields) {                                
                 $this
                     ->message('create')
@@ -292,63 +270,6 @@ class TranslationsControlPanel extends ControlPanelApiController
             ->addRule('text:required','fields')         
             ->validate();       
     }
-
-    /**
-     * Translate db model
-     *
-     * @param string $modelName
-     * @param string $extension
-     * @param string $uuid
-     * @param string $fields
-     * @param string $language
-     * @return array|false
-     */
-    public function translateDbModel($modelName, $extension, $uuid, $fields, $language)
-    {
-        $fields = Arrays::toArray($fields,',');  
-        $model = Model::create($modelName,$extension)->findById($uuid);
-        if (\is_object($model) == false) {
-            $this->error('Not valid translation uuid.');
-            return false;
-        }
-        
-        return $this->translateFields($fields,$model->toArray(),$language);      
-    }
-
-    /**
-     * Translate fields
-     *
-     * @param string|array $fields
-     * @param array $values
-     * @param string $language
-     * @param bool $exitOnError
-     * @return array|false
-     */
-    public function translateFields($fields, array $values, $language, $exitOnError = false)
-    {
-        $driver = $this->createTranslationDriver();
-        if (\is_object($driver) == false) {
-            return false;
-        }
-
-        $fields = (\is_string($fields) == true) ? Arrays::toArray($fields,',') : $fields;  
-      
-        foreach ($fields as $index => $key) {           
-            $text = (isset($values[$key]) == true) ? $values[$key] : null;   
-            $text = (\is_array($text) == true) ? null : \trim($text);   
-            if (empty($text) == false) {
-                $translatedText = $driver->translate($text,$language);
-                
-                if ($exitOnError == true && ($translatedText === false)) {
-                    return false;
-                }
-                $translatedFields[$key] = ($translatedText === false) ? $text : $translatedText;   
-            } 
-                                
-        }
-
-        return $translatedFields;
-    } 
 
     /**
      * Create translation driver

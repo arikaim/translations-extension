@@ -12,7 +12,7 @@ namespace Arikaim\Extensions\Translations\Console;
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\Arikaim;
-use Arikaim\Extensions\Translations\Console\TranslateConsole;
+use Arikaim\Extensions\Translations\Classes\Translations;
 
 /**
  * Translate email component command
@@ -24,7 +24,7 @@ class TranslateEmail extends ConsoleCommand
      *
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('translate:email')->setDescription('Translate email.');
         $this->addOptionalArgument('theme','Theme Name'); 
@@ -41,25 +41,17 @@ class TranslateEmail extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        $translate = new TranslateConsole(function($componentName,$indent) {
-            $this->style->write(\str_pad("- ",$indent," ",STR_PAD_LEFT) . ConsoleHelper::getLabelText($componentName,'yellow'));
-        },function($componentName) {
-            $this->style->writeLn(ConsoleHelper::getLabelText(' done'));
-        },function($componentName,$message) {
-            $this->style->writeLn(ConsoleHelper::getLabelText($message,'red'));
-        },function($componentName) {
-            $this->style->writeLn('');
-        });
+        $this->showTitle();
 
         $theme = $input->getArgument('theme');       
         if (empty($theme) == true) {
             $this->showError("Missing theme name option!");
             return;
-        }
-        
-        $pageName = $input->getArgument('email');
-        if (empty($pageName) == true) {
-            $this->showError("Missing page name option!");
+        }        
+
+        $emailName = $input->getArgument('email');
+        if (empty($emailName) == true) {
+            $this->showError("Missing email name option!");
             return;
         }
 
@@ -74,6 +66,7 @@ class TranslateEmail extends ConsoleCommand
             $this->showError("Theme name $theme not valid!");
             return;
         }
+        $package = $manager->createPackage($theme);
 
         $driverName = Arikaim::options()->get('translations.service.driver');
         $driver = Arikaim::driver()->create($driverName);
@@ -82,22 +75,25 @@ class TranslateEmail extends ConsoleCommand
             return;
         }
 
-        $package = $manager->createPackage($theme);
-    
-        $this->style->writeLn('');
-        $this->showTitle('Translate email ');
+        $translations = new Translations();
+        $translations->onJobProgress(function($name) {
+            $this->writeLn('  ' . ConsoleHelper::checkMark() . ' ' . $name);
+        });
 
-        $this->style->writeLn('Theme: ' . ConsoleHelper::getLabelText($theme,'green'));
-        $this->style->writeLn('Email: ' . ConsoleHelper::getLabelText($pageName,'green'));
-        $this->style->write('From ' . ConsoleHelper::getLabelText('en','green'));
-        $this->style->writeLn(' to ' . ConsoleHelper::getLabelText($language,'green') . ' language.');
-        $this->style->writeLn('Translation Driver: ' . ConsoleHelper::getLabelText($driverName,'green'));
+        $this->writeFieldLn('Theme',$theme);
+        $this->writeFieldLn('Email',$emailName);
+        $this->writeFieldLn('From language','en');
+        $this->writeFieldLn('To language',$language);
+        $this->writeFieldLn('Driver',$driverName);
+        $this->writeLn('');
+     
+        $translations->translateEmail($package,$driver,$language,$emailName);
 
-        $this->style->writeLn('');
-       
-        $translate->translateEmail($package,$driver,$language,$pageName);
+        if ($translations->hasError() == true) {
+            $this->showErrors($translations->getErrors());
+            return;
+        } 
 
-        $this->style->writeLn('');
         $this->showCompleted();
     }    
 }
