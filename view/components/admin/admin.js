@@ -56,6 +56,6 @@ function TranslationsControlPanel() {
 
 var translations = new TranslationsControlPanel();
 
-arikaim.page.onReady(function() {
+arikaim.component.onLoaded(function() {
     translations.init();
 });

@@ -170,7 +170,7 @@ function TemplateTranslations() {
 
 var templateTranslations = new TemplateTranslations();
 
-$(document).ready(function() {
+arikaim.component.onLoaded(function() {
     templateTranslations.init();
     templateTranslations.initRows();
 });

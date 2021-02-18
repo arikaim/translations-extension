@@ -1,6 +1,6 @@
 'use strict';
 
-$(document).ready(function() {  
+arikaim.component.onLoaded(function() { 
     $('.accordion').accordion({
         onOpen: function() {
             var language = $(this).attr('language');

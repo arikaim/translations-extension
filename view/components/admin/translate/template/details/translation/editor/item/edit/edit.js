@@ -1,6 +1,6 @@
 'use strict';
 
-$(document).ready(function() {
+arikaim.component.onLoaded(function() {
     arikaim.ui.form.onSubmit('.save-property-form',function() {       
         var key = $("#property_key").val();
 

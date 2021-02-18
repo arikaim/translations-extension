@@ -1,5 +1,5 @@
 {% component 'components:tabs.vertical.content' %}
-{% set primary_template = getOption('primary.template') %}
+{% set primary_template = service('view').getPrimaryTemplate() %}
 {% set language = language|default(current_language) %}
 {% set class = 'sixteen wide column' %}
 {% set panel_class = '' %}

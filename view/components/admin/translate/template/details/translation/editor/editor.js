@@ -53,6 +53,6 @@ function TranslationEditor() {
 
 var translationEditor = new TranslationEditor();
 
-$(document).ready(function() {
+arikaim.component.onLoaded(function() {
     translationEditor.init();
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-arikaim.page.onReady(function() { 
+arikaim.component.onLoaded(function() {
     var translationCallback = null;
 
     arikaim.ui.button('.translate-button',function(element) {        

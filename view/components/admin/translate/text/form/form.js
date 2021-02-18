@@ -1,6 +1,6 @@
 'use strict';
 
-arikaim.page.onReady(function() {    
+arikaim.component.onLoaded(function() {  
     arikaim.ui.form.addRules("#translate_text_form",{
         inline: false,
         fields: {

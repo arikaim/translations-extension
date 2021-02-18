@@ -1,6 +1,6 @@
 'use strict';
 
-$(document).ready(function() {
+arikaim.component.onLoaded(function() {
     $('#drivers_dropdown').on('change',function() {
         var driverName = $('#drivers_dropdown').dropdown('get value');
         arikaim.page.loadContent({

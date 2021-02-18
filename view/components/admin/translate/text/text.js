@@ -1,6 +1,6 @@
 'use strict';
 
-arikaim.page.onReady(function() {  
+arikaim.component.onLoaded(function() {
     arikaim.ui.form.onSubmit('#translate_text_form',function() {
         var text = $('#text').val();
         var language = $('#choose_language').dropdown('get value');
