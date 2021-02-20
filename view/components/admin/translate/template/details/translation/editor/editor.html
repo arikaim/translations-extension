@@ -1,5 +1,8 @@
 {% set type = type|default('components') %}
-
+{% if translation is empty %}
+{% set template = package('template').createPackage(theme_name) %}
+{% set translation = template.readTranslation(component_name,language,type) %}
+{% endif %}
 <table class="ui table definition">
     <thead>
         <tr>

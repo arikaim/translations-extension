@@ -10,6 +10,16 @@
 </div>
 <div class="ui divider"></div>
 <div class="ui segment">
+    <button class="ui mini compact button icon basic labeled update-translation" 
+        theme="{{ theme_name }}"
+        type="{{ type }}"
+        update="true"
+        component-name="{{ component_name }}"                
+        language="{{ language }}"
+        title="{{ labels.update }}">
+        <i class="icon green sync"></i>
+        {{ labels.update }}
+    </button>   
     <div class="ui label basic">
         {% if type == 'components' %}
             <i class="icon project diagram blue small"></i>
@@ -39,7 +49,7 @@
         <span class="ui text font-bold teal pl-2 pr-1">..{{ file_name }}</span>
     </div>
 </div>
-<div>     
+<div id="translation_editor">     
     {{  component('translations::admin.translate.template.details.translation.editor',{
             translation: translation,
             type: type,

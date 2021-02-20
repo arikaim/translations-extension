@@ -19,6 +19,18 @@ function TranslationsControlPanel() {
         return arikaim.post('/api/translations/admin/translate/component',data,onSuccess,onError);
     };
 
+    this.updateTranslation = function(theme, componentName, language, type, onSuccess, onError) {
+        var data = {
+            theme: theme,
+            component_name: componentName,
+            language: language,
+            update: true,
+            type: type
+        };
+
+        return arikaim.post('/api/translations/admin/translate/component',data,onSuccess,onError);
+    };
+
     this.saveComponentProperty = function(formId, onSuccess, onError) {
         return arikaim.post('/api/translations/admin/translate/save/property',formId,onSuccess,onError); 
     };

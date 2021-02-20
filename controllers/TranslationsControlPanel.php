@@ -96,6 +96,7 @@ class TranslationsControlPanel extends ControlPanelApiController
             $language = $data->get('language');          
             $componentName = $data->get('component_name');
             $component = \str_replace('_','.',$componentName);
+            $update = $data->get('update',false);   
 
             $packageManager = $this->get('packages')->create('template');
             $template = $packageManager->createPackage($theme);
@@ -105,7 +106,7 @@ class TranslationsControlPanel extends ControlPanelApiController
             }
 
             $translationFileName = $template->getTranslationFileName($component,$language,$type);
-            if (File::exists($translationFileName) == true) {
+            if (File::exists($translationFileName) == true && $update == false) {
                 $this->error('errors.translation.exists');
                 return false;
             }

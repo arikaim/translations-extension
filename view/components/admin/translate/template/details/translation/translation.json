@@ -4,6 +4,7 @@
         "component": "Component",
         "page": "Page",
         "file": "File",
+        "update": "Update",
         "language": "Language"
     }    
 }

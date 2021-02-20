@@ -28,14 +28,6 @@ class Translations
         TaskErrors,
         JobProgress;
 
-     /**
-     * Constructor
-     *    
-     */
-    public function __construct()
-    {
-    }
-
     /**
      * Translate email
      *
@@ -160,10 +152,7 @@ class Translations
                 $translation[$key] = Self::translate($value,$language,$driver);
             } else {       
                 $translatedText = $driver->translate($value,$language); 
-                if ($translatedText === false) {
-                    return false;
-                }
-                $translation[$key] = $translatedText;
+                $translation[$key] = ($translatedText === false) ? $translation[$key] : $translatedText;             
             }           
         }
 

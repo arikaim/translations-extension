@@ -60,6 +60,19 @@ function TemplateTranslations() {
         });
     };
 
+    this.loadEditor = function(theme, language, componentName, type) {
+        arikaim.page.loadContent({
+            id: 'translation_editor',
+            component: 'translations::admin.translate.template.details.translation.editor',
+            params: { 
+                theme_name: theme,
+                language: language,
+                component_name: componentName,
+                type: type
+            }
+        });
+    };
+
     this.loadChildComponents = function(theme, language, parent, id, type) {          
         type = getDefaultValue(type,'components');
 
