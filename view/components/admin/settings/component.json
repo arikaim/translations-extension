@@ -1,7 +1,8 @@
 {
     "include": {       
         "js": [
-            "system:admin.packages"
+            "system:admin.packages",
+            "system:options"
         ]
     },
     "access": {
