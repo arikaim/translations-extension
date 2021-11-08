@@ -5,7 +5,7 @@
     </div>    
     <div class="field">
         <label>{{ fields.language.label }}</label>
-        {{  component('components:language.dropdown',{
+        {{  component('semantic~language.dropdown',{
                 name: 'language', 
                 id: 'choose_language', 
                 selected: language, 
@@ -13,5 +13,5 @@
             }) 
         }}   
     </div>                   
-    {{ component('components:form.footer',{ button_title: buttons.translate }) }}   
+    {{ component('semantic~form.footer',{ button_title: buttons.translate }) }}   
 </form>

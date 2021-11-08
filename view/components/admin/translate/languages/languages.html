@@ -1,4 +1,4 @@
-{% component 'components:tabs.vertical.content' %}
+{% component 'semantic~tabs.vertical.content' %}
 {% set driver_name = getOption('translations.service.driver') %}
 {% set driver = service('driver').create(driver_name) %}
 {% set items = driver.getLanguages() %}

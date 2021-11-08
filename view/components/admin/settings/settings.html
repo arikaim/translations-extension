@@ -1,9 +1,9 @@
-{% component 'components:tabs.vertical.content' %}
+{% component 'semantic~tabs.vertical.content' %}
 {% set selected_driver = getOption('translations.service.driver') %}
 <div class="mt-4">     
     <div class="ui form">
         <div class="ui segment">
-            {{  component('components:option.driver',{ 
+            {{  component('semantic~option.driver',{ 
                     option_name: 'translations.service.driver', 
                     category: 'translate',
                     label: labels.driver,
