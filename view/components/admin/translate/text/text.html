@@ -3,15 +3,19 @@
 {% set panel_class = '' %}
 <div class="ui grid">
     <div class="eight wide column mt-4">
-        {{ component('translations::admin.translate.text.form',{}) }}
+        <div class="ui segment">
+            {{ component('translations::admin.translate.text.form',{}) }}
+        </div>
     </div>
     <div class="eight wide column mt-4">
-        <form class="ui form fluid">         
-            <div class="field readonly">
-                <label>{{ labels.translated }}</label>
-                <textarea readonly id="translated_text" rows="7" cols="7" ></textarea>        
-            </div>                                     
-        </form>
+        <div class="ui segment"> 
+            <form class="ui form fluid">         
+                <div class="field readonly">
+                    <label>{{ labels.translated }}</label>
+                    <textarea readonly id="translated_text" rows="7" cols="7" ></textarea>        
+                </div>                                     
+            </form>
+        </div>
     </div>
 </div>
 {% endcomponent %}

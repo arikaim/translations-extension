@@ -18,5 +18,7 @@ Translations extension for Arikaim CMS
 #### Installation
 
 ```sh
+
 composer require arikaim/translations-extension
+
 ```

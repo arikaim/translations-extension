@@ -2,13 +2,12 @@
 {% set type = type|default('components') %}
 {% set translation = template.readTranslation(component_name,language,type) %}
 {% set file_name = template.getTranslationRelativeFileName(component_name,language,type) %}
-<div class="ui header">
+<div class="ui mini header">
     <i class="globe icon small blue"></i>  
     <div class="content">
         {{ title }}
     </div>    
 </div>
-<div class="ui divider"></div>
 <div class="ui segment">
     <button class="ui mini compact button icon basic labeled update-translation" 
         theme="{{ theme_name }}"
